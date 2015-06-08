@@ -5,3 +5,4 @@ housepy
 config.yaml
 signal_processing
 conversations/*
+run

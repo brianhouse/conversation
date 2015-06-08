@@ -27,7 +27,7 @@ set daemon 120
 set httpd port 2812 and use address localhost   # configure monitoring webservice
   allow 0.0.0.0/0.0.0.0                         # Allow everything to connect  
 
-check process oscpin with pidfile /home/pi/sounders/run/oscpin.pid
-  start program = "/usr/bin/python3 /home/pi/sounders/oscpin.py" 
+check process oscpin with pidfile /home/pi/conversation/run/oscpin.pid
+  start program = "/usr/bin/python3 /home/pi/conversation/oscpin.py" 
   stop program = "/bin/pwd"
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import os, sys, time, random, threading, queue, json, __main__
+import os, sys, time, random, threading, queue, json
 from housepy import osc, config, log
 
 osc.verbose = False
-SIGDIR = os.path.abspath(os.path.join(os.path.dirname(__main__.__file__), "conversations"))
+SIGDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "conversations"))
 
 def retrieve_convo():
     try:
@@ -20,13 +20,10 @@ def retrieve_convo():
     return signal    
 
 notes = retrieve_convo()
-print(notes)
 
 sender = osc.Sender(config['oscpin'], 23232)
 
-pins = [2, 3, 4, 17, 27, 22, 10, 9, 11]
-
-for pin in pins:
+for pin in (2, 3):
     sender.send("/noteoff", pin)
 
 start_t = time.time()
@@ -35,7 +32,7 @@ while True:
     while time.time() - start_t < notes[i][0]:
         time.sleep(0.01)
     sender.send("/noteon" if notes[i][2] else "/noteoff", 2 if notes[i][1] == 'A' else 3)
-    print(i)
+    log.info("%s %s" % (notes[i][1], "ON " if notes[i][2] else "OFF"))
     i += 1
     if i == len(notes):
         break

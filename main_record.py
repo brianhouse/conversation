@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import os, sys, time, random, threading, queue, json, __main__
+import os, sys, time, random, threading, queue, json
 from housepy import osc, config, log, util
 from housepy.keys import Keys
 
 osc.verbose = False
-SIGDIR = os.path.abspath(os.path.join(os.path.dirname(__main__.__file__), "conversations"))
+SIGDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "conversations"))
 
 notes = []
 

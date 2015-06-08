@@ -12,12 +12,17 @@ except ImportError:
         OUT = "out"
         HIGH, LOW = 1, 0
         PUD_UP = None
+        IN = 1
         def setmode(n):
             pass
-        def setup(n, m):
+        def setup(n, m, pull_up_down=None):
             pass
         def output(n, m):
             pass
+        def cleanup():
+            pass
+        def input(pin):
+            return None
 
 process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run")))  
 
