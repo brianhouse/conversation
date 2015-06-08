@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
-log.info("Starting up...")
-
 import sys, time, os
 from housepy import osc, config, log, process
+log.info("Starting up...")
 try:
     import RPi.GPIO as GPIO
 except ImportError:
@@ -48,7 +47,9 @@ osc.Receiver(23232, on_message)
 
 sender = osc.Sender(config['recorder'], 23232)
 while True:
-    input_state = GPIO.input(14)
-    if input_state:
-        sender.send("/contact", [pin, time.time()])
-    time.sleep(1/60)     ## has to be 30hz at least for gestures
+    t = time.time()
+    for pin in (14, 15):
+        input_state = GPIO.input(pin)
+        if input_state:
+            sender.send("/contact", [pin, t])
+    time.sleep(0.01)     # as fast as possible
