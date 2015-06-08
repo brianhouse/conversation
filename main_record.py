@@ -1,40 +1,47 @@
 #!/usr/bin/env python3
 
-import sys, time, random, threading, queue
-import signal_processing as sp
-from housepy import osc, config, log
+import os, sys, time, random, threading, queue, json, __main__
+from housepy import osc, config, log, util
 from housepy.keys import Keys
 
 osc.verbose = False
+SIGDIR = os.path.abspath(os.path.join(os.path.dirname(__main__.__file__), "conversations"))
 
-A, B = [], []
+notes = []
 
 def on_message(location, address, data):
-    if address == "/noteon":
-        pin = int(data[0])
-        t = float(data[1])
-        log.info("ON %d %f" % (pin, t))
-        if pin == 14:
-            A.append(t)
-        elif pin == 15:
-            B.append(t)
-    if address == "/noteoff":
-        log.info("(off)")
+    note_on = address == "/noteon"
+    pin = int(data[0])
+    t = float(data[1])
+    if note_on:
+        log.info("%d ON  %f" % (pin, t))
+    else:
+        log.info("%d OFF %f" % (pin, t))
+    notes.append((t, 'A' if pin == 14 else 'B', note_on))
     
 receiver = osc.Receiver(23232, on_message)
 
 def pack():
-    global A, B
-    if not len(A) or not len(B):
-        log.warning("One or both voices is empty")
+    global notes
+    if not len(notes):
+        log.warning("Conversation is empty")
         return
-    minimum = min(min(A), min(B))
-    maximum = max(max(A), max(B))
-    A = list(sp.normalize(A, minimum, maximum))
-    B = list(sp.normalize(B, minimum, maximum))
-    result = A, B
-    log.info(result)
-    A, B = [], []
+    notes_ = list(zip(*notes))       
+    min_t = min(notes_[0])
+    ts = [t - min_t for t in notes_[0]]
+    result = list(zip(ts, notes_[1], notes_[2]))
+    # print(result)
+    store_convo(result)
+    notes = []
+
+def store_convo(signal):
+    t = util.timestamp()
+    path = os.path.join(SIGDIR, "%s.json" % t)
+    log.info("Storing conversation at %s" % path)
+    with open(path, 'w') as handle:
+        content = json.dumps(signal, indent=4)
+        print(content)
+        handle.write(content)
 
 keys = Keys()
 

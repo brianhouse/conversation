@@ -4,3 +4,4 @@ dev
 housepy
 config.yaml
 signal_processing
+conversations/*
