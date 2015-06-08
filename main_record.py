@@ -10,14 +10,16 @@ osc.verbose = False
 A, B = [], []
 
 def on_message(location, address, data):
-    log.debug(data)
     if address == "/noteon":
         pin = int(data[0])
         t = float(data[1])
+        log.info("ON %d %f" % (pin, t))
         if pin == 14:
             A.append(t)
         elif pin == 15:
             B.append(t)
+    if address == "/noteoff":
+        log.info("(off)")
     
 receiver = osc.Receiver(23232, on_message)
 
@@ -28,8 +30,8 @@ def pack():
         return
     minimum = min(min(A), min(B))
     maximum = max(max(A), max(B))
-    A = sp.normalize(A, minimum, maximum)
-    B = sp.normalize(B, minimum, maximum)
+    A = list(sp.normalize(A, minimum, maximum))
+    B = list(sp.normalize(B, minimum, maximum))
     result = A, B
     log.info(result)
     A, B = [], []

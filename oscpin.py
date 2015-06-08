@@ -26,7 +26,7 @@ log.info("Setting up pins...")
 GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 outputs = [2, 3, 4, 17, 27, 22, 10, 9, 11]
-inputs = [14]#, 15, 18, 23, 24, 25, 8, 7]
+inputs = [14, 15]#, 18, 23, 24, 25, 8, 7]
 for pin in outputs:
     log.info("--> %s output" % pin)
     GPIO.setup(pin, GPIO.OUT)
@@ -52,7 +52,7 @@ while True:
     for pin in inputs:
         if state[pin] != GPIO.input(pin):
             state[pin] = !state[pin]
-            if state[pin]:
+            if not state[pin]:  # it's reverse
                 sender.send("/noteon", [pin, t])
             else:
                 sender.send("/noteoff", [pin, t])
