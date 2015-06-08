@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+log.info("Starting up...")
+
 import sys, time, os
 from housepy import osc, config, log, process
 try:
@@ -46,7 +48,7 @@ osc.Receiver(23232, on_message)
 
 sender = osc.Sender(config['recorder'], 23232)
 while True:
-    input_state = GPIO.input(18)
+    input_state = GPIO.input(14)
     if input_state:
         sender.send("/contact", [pin, time.time()])
     time.sleep(1/60)     ## has to be 30hz at least for gestures
