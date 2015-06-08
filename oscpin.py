@@ -26,7 +26,7 @@ log.info("Setting up pins...")
 GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 outputs = [2, 3, 4, 17, 27, 22, 10, 9, 11]
-inputs = [14, 15, 18, 23, 24, 25, 8, 7]
+inputs = [14]#, 15, 18, 23, 24, 25, 8, 7]
 for pin in outputs:
     log.info("--> %s output" % pin)
     GPIO.setup(pin, GPIO.OUT)
@@ -46,10 +46,14 @@ def on_message(location, address, data):
 osc.Receiver(23232, on_message)
 
 sender = osc.Sender(config['recorder'], 23232)
+state = {pin: False for pin in inputs}
 while True:
     t = time.time()
-    for pin in (14, 15):
-        input_state = GPIO.input(pin)
-        if input_state:
-            sender.send("/contact", [pin, t])
+    for pin in inputs:
+        if state[pin] != GPIO.input(pin):
+            state[pin] = !state[pin]
+            if state[pin]:
+                sender.send("/noteon", [pin, t])
+            else:
+                sender.send("/noteoff", [pin, t])
     time.sleep(0.01)     # as fast as possible

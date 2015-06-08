@@ -11,14 +11,13 @@ A, B = [], []
 
 def on_message(location, address, data):
     log.debug(data)
-    if address != "/contact":
-        return
-    pin = int(data[0])
-    t = float(data[1])
-    if pin == 14:
-        A.append(t)
-    elif pin == 15:
-        B.append(t)
+    if address == "/noteon":
+        pin = int(data[0])
+        t = float(data[1])
+        if pin == 14:
+            A.append(t)
+        elif pin == 15:
+            B.append(t)
     
 receiver = osc.Receiver(23232, on_message)
 
@@ -43,6 +42,8 @@ def on_s():
     pack()
 keys.add_callback(ord('a'), on_a)
 keys.add_callback(ord('s'), on_s)
+
+log.info("--> ready")
 
 while True:
     try:
