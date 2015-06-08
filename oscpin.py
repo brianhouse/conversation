@@ -48,7 +48,7 @@ osc.Receiver(23232, on_message)
 sender = osc.Sender(config['recorder'], 23232)
 state = {pin: False for pin in inputs}
 while True:
-    str(t) = time.time()
+    t = str(time.time())
     for pin in inputs:
         if state[pin] != GPIO.input(pin):
             state[pin] = not state[pin]
