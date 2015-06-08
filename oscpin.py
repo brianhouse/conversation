@@ -44,7 +44,7 @@ def on_message(location, address, data):
 
 osc.Receiver(23232, on_message)
 
-sender = osc.Sender(config['main'], 23232)
+sender = osc.Sender(config['recorder'], 23232)
 while True:
     input_state = GPIO.input(18)
     if input_state:
