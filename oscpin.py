@@ -41,26 +41,31 @@ for pin in inputs:
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 log.info("--> done")
 
+def tap_on(pin):    
+    GPIO.output(pin, 0)
+    sender.send("/noteon", [pin, str(time.time())])    
+
+def tap_off(pin):
+    GPIO.output(pin, 1)
+    sender.send("/noteoff", [pin, str(time.time())])    
+
 def on_message(location, address, data):
     pin = int(data[0])
     if address == "/noteon":
-        GPIO.output(pin, 0)
+        tap_on(pin)        
     if address == "/noteoff":
-        GPIO.output(pin, 1)
+        tap_off(pin)        
 
 osc.Receiver(23232, on_message)
 
 sender = osc.Sender(config['recorder'], 23232)
 state = {pin: False for pin in inputs}
-while True:
-    t = str(time.time())
+while True:    
     for p, pin in enumerate(inputs):
         if state[pin] != GPIO.input(pin):
             state[pin] = not state[pin]
             if not state[pin]:  # it's reverse
-                sender.send("/noteon", [pin, t])
-                GPIO.output(outputs[p], 0)
+                tap_on(outputs[p])
             else:
-                sender.send("/noteoff", [pin, t])
-                GPIO.output(outputs[p], 1)
+                tap_off(outputs[p])
     time.sleep(0.01)     # as fast as possible
