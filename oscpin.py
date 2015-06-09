@@ -30,7 +30,7 @@ process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run"
 log.info("Setting up pins...")
 GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
-outputs = [2, 3, 4, 17, 27, 22, 10, 9, 11]
+outputs = [2, 3]#, 4, 17, 27, 22, 10, 9, 11]
 inputs = [14, 15]#, 18, 23, 24, 25, 8, 7]
 for pin in outputs:
     log.info("--> %s output" % pin)

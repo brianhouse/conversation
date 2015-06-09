@@ -26,6 +26,8 @@ sender = osc.Sender(config['oscpin'], 23232)
 for pin in (2, 3):
     sender.send("/noteoff", pin)
 
+time.sleep(1)
+
 start_t = time.time()
 i = 0
 while True:
