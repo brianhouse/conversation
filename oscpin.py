@@ -54,11 +54,13 @@ sender = osc.Sender(config['recorder'], 23232)
 state = {pin: False for pin in inputs}
 while True:
     t = str(time.time())
-    for pin in inputs:
+    for p, pin in enumerate(inputs):
         if state[pin] != GPIO.input(pin):
             state[pin] = not state[pin]
             if not state[pin]:  # it's reverse
                 sender.send("/noteon", [pin, t])
+                GPIO.output(outputs[p], 0)
             else:
                 sender.send("/noteoff", [pin, t])
+                GPIO.output(outputs[p], 1)
     time.sleep(0.01)     # as fast as possible
