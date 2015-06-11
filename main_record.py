@@ -9,6 +9,8 @@ SIGDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "conversations"
 
 notes = []
 
+sender = osc.Sender(23233) # for robot
+
 def on_message(location, address, data):
     note_on = address == "/noteon"
     pin = int(data[0])
@@ -18,6 +20,7 @@ def on_message(location, address, data):
     else:
         log.info("%d OFF %f" % (pin, t))
     notes.append((t, 'A' if pin == 14 else 'B', note_on))
+    sender.send(address, data)
     
 receiver = osc.Receiver(23232, on_message)
 
