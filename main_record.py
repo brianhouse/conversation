@@ -19,7 +19,7 @@ def on_message(location, address, data):
         log.info("%d ON  %f" % (pin, t))
     else:
         log.info("%d OFF %f" % (pin, t))
-    notes.append((t, 'A' if pin == 14 else 'B', note_on))
+    notes.append((t, 'A' if pin == 2 else 'B', note_on))
     sender.send(address, data)
     
 receiver = osc.Receiver(23232, on_message)

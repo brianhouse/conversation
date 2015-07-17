@@ -43,11 +43,13 @@ log.info("--> done")
 
 def tap_on(pin):    
     GPIO.output(pin, 0)
-    sender.send("/noteon", [pin, str(time.time())])    
+    if config['recording']:
+        sender.send("/noteon", [pin, str(time.time())])    
 
 def tap_off(pin):
     GPIO.output(pin, 1)
-    sender.send("/noteoff", [pin, str(time.time())])    
+    if config['recording']:
+        sender.send("/noteoff", [pin, str(time.time())])    
 
 def on_message(location, address, data):
     pin = int(data[0])

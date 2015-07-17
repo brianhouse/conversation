@@ -54,3 +54,7 @@
 
 ### shutdown, remember:
     sudo shutdown -h now
+
+
+    u: sounderbox
+    p: raspberry
