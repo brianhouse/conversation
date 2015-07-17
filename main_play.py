@@ -52,7 +52,7 @@ def main():
             break
 
     if filename is None:
-        pause = ((random.random() * 5) + 10) * 60 * 60 # pause between 10 and 15 minutes
+        pause = int(((random.random() * 5) + 10) * 60) # pause between 10 and 15 minutes
         log.info("Pausing for %s seconds..." % pause)
         time.sleep(pause)    
         main()
