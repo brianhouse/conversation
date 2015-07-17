@@ -35,19 +35,19 @@ inputs = [14, 15]#, 18, 23, 24, 25, 8, 7]
 for pin in outputs:
     log.info("--> %s output" % pin)
     GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.LOW)
+    GPIO.output(pin, GPIO.HIGH)
 for pin in inputs:
     log.info("--> %s input" % pin)
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 log.info("--> done")
 
 def tap_on(pin):    
-    GPIO.output(pin, 0)
+    GPIO.output(pin, GPIO.LOW)
     if config['recording']:
         sender.send("/noteon", [pin, str(time.time())])    
 
 def tap_off(pin):
-    GPIO.output(pin, 1)
+    GPIO.output(pin, GPIO.HIGH)
     if config['recording']:
         sender.send("/noteoff", [pin, str(time.time())])    
 
