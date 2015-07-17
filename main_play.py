@@ -52,7 +52,7 @@ def main():
             break
 
     if filename is None:
-        time.sleep(((random.random() * 5) + 5) * 60)    # pause between 5 and 10 minutes
+        time.sleep(((random.random() * 5) + 10) * 60)    # pause between 10 and 15 minutes
         main()
 
 main()
