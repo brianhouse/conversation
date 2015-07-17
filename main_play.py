@@ -13,7 +13,7 @@ def retrieve_convo(filename):
             path = os.path.join(SIGDIR, random.choice(signal_files))
         else:
             path = os.path.join(SIGDIR, filename)
-        print("Loading conversation data from %s..." % path)
+        log.info("Loading conversation data from %s..." % path)
         with open(path, 'r') as handle:
             content = handle.read()
             signal = json.loads(content)
@@ -52,7 +52,7 @@ def main():
             break
 
     if filename is None:
-        time.sleep(((random.random() * 5) + 10) * 60)    # pause between 10 and 15 minutes
+        time.sleep(((random.random() * 5) + 10) * 60 * 60)    # pause between 10 and 15 minutes
         main()
 
 main()
