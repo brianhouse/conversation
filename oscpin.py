@@ -60,14 +60,20 @@ def on_message(location, address, data):
 
 osc.Receiver(23232, on_message)
 
-sender = osc.Sender(config['recorder'], 23232)
-state = {pin: False for pin in inputs}
-while True:    
-    for p, pin in enumerate(inputs):
-        if state[pin] != GPIO.input(pin):
-            state[pin] = not state[pin]
-            if not state[pin]:  # it's reverse
-                tap_on(outputs[p])
-            else:
-                tap_off(outputs[p])
-    time.sleep(0.01)     # as fast as possible
+if config['recording']:
+    sender = osc.Sender(config['recorder'], 23232)
+    state = {pin: False for pin in inputs}
+    while True:    
+        for p, pin in enumerate(inputs):
+            if state[pin] != GPIO.input(pin):
+                state[pin] = not state[pin]
+                if not state[pin]:  # it's reverse
+                    tap_on(outputs[p])
+                else:
+                    tap_off(outputs[p])
+        time.sleep(0.01)     # as fast as possible
+else:
+    while True:
+        time.sleep(1)
+
+        
