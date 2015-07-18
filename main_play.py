@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import os, sys, time, random, threading, queue, json
-from housepy import osc, config, log
+from housepy import osc, config, log, process
+
+process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run")))
 
 osc.verbose = False
 SIGDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "conversations"))
@@ -25,36 +27,38 @@ def retrieve_convo(filename):
 
 def main():
 
-    filename = sys.argv[1] if len(sys.argv) > 1 else None
-    notes = retrieve_convo(filename)
+    try:
 
-    # normalize
-    min_t = notes[0][0]
-    for note in notes:
-        note[0] -= min_t
+        filename = sys.argv[1] if len(sys.argv) > 1 else None
+        notes = retrieve_convo(filename)
 
-    sender = osc.Sender(config['oscpin'], 23232)
+        # normalize
+        min_t = notes[0][0]
+        for note in notes:
+            note[0] -= min_t
+
+        sender = osc.Sender(config['oscpin'], 23232)
+
+        for pin in (2, 3):
+            sender.send("/noteoff", pin)
+
+        time.sleep(1)
+
+        start_t = time.time()
+        i = 0
+        while True:
+            while time.time() - start_t < notes[i][0]:
+                time.sleep(0.01)
+            sender.send("/noteon" if notes[i][2] else "/noteoff", 2 if notes[i][1] == 'A' else 3)
+            log.info("%s %s" % (notes[i][1], "ON " if notes[i][2] else "OFF"))
+            i += 1
+            if i == len(notes):
+                break
+
+    except Exception as e:
+        log.info(log.exc(3))
 
     for pin in (2, 3):
         sender.send("/noteoff", pin)
-
-    time.sleep(1)
-
-    start_t = time.time()
-    i = 0
-    while True:
-        while time.time() - start_t < notes[i][0]:
-            time.sleep(0.01)
-        sender.send("/noteon" if notes[i][2] else "/noteoff", 2 if notes[i][1] == 'A' else 3)
-        log.info("%s %s" % (notes[i][1], "ON " if notes[i][2] else "OFF"))
-        i += 1
-        if i == len(notes):
-            break
-
-    if filename is None:
-        pause = int(((random.random() * 5) + 10) * 60) # pause between 10 and 15 minutes
-        log.info("Pausing for %s seconds..." % pause)
-        time.sleep(pause)    
-        main()
 
 main()
