@@ -1,3 +1,9 @@
+
+    h: sounderbox
+    u: pi
+    p: raspberry
+
+
 ### updates
     sudo apt-get update
     sudo apt-get upgrade
@@ -28,8 +34,8 @@
     ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
     update_config=1
     network={
-    ssid="DFLTD"
-    psk="TKM6ZG7BTXJM6XZR"
+    ssid=""
+    psk=""
     proto=RSN
     key_mgmt=WPA-PSK
     pairwise=CCMP
@@ -56,5 +62,3 @@
     sudo shutdown -h now
 
 
-    u: sounderbox
-    p: raspberry
